@@ -1,69 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import classNames from "classnames";
 import "./App.css";
 
 const manage = Yup.object().shape({
-  firstName: Yup.string()
+  name: Yup.string()
     .min(2, "Too Short!")
     .required("Firstname is required"),
-  lastName: Yup.string().min(2, "Too Short!").required("Lastname is required"),
+  username: Yup.string().min(2, "Too Short!").required("Lastname is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
-  rollNo: Yup.number()
-    .typeError("Must be a number")
-    .required("Roll no is required")
-    .positive("Must be a positive number"),
-  phoneNo: Yup.string()
+  website: Yup.string().url().required("Website is required"),
+  phone: Yup.string()
     .matches(/^\d{10}$/, "Must be exactly 10 digits.")
     .required("contact no is required"),
 });
 
 function App() {
   const [data, setData] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editIndex, setEditIndex] = useState(null);
-  const [initialValues, setInitialValues] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    rollNo: "",
-    phoneNo: "",
-  });
+  const [isEditing, setIsEditing] = useState(null);
+
+  useEffect(()=>{
+    fetch('https://jsonplaceholder.typicode.com/users')
+    .then(response=>response.json().then(dt=>setData(dt)))
+    
+    .catch(err=>console.error(err));
+  },[]);
+
+
   const handleSubmit = (values, { resetForm }) => {
-    if (isEditing) {
-      const updated = [...data];
-      updated[editIndex] = values;
-      setData(updated);
-      setIsEditing(false);
-      setEditIndex(null);
-      setInitialValues({
-        firstName: "",
-        lastName: "",
-        email: "",
-        rollNo: "",
-        phoneNo: "",
-      });
-    } else {
-      setData((prevData) => [...prevData, values]);
-    }
-    resetForm();
-    //   if(isEditing!==null){
-    //     setData((prevData)=>prevData.map((input,id)=>
-    //       (id===isEditing?values:input)
-    //     ));
-    //     setIsEditing(null);
-    //   }
-    //   else{
-    //     setData((prevData)=>[...prevData,values]);
-    //   }
-    //   resetForm();
+      if(isEditing!==null){
+        setData((prevData)=>prevData.map((input,id)=>
+          (id===isEditing?values:input)
+        ));
+        setIsEditing(null);
+      }
+      else{
+        setData((prevData)=>[...prevData,values]);
+      }
+      resetForm();
   };
+
   const handleEdit = (id) => {
     console.log(id);
-    setIsEditing(true);
-    setEditIndex(id);
-    setInitialValues(data[id]);
+    setIsEditing(id);
   };
 
   const handleDelete = (id) => {
@@ -72,10 +52,10 @@ function App() {
 
   const headers = [
     "Sr.no.",
-    "Firstname",
-    "Lastname",
+    "Name",
+    "Username",
     "Email",
-    "Roll No",
+    "Website",
     "Phone No",
     "Actions",
   ];
@@ -89,43 +69,19 @@ function App() {
         <div className="max-w-96 mx-auto mt-10 bg-white p-8 rounded shadow-md">
           <Formik
             initialValues={
-              initialValues
-              // isEditing !== null
-              //   ? data[isEditing]
-              //   : {
-              //       firstName: "",
-              //       lastName: "",
-              //       email: "",
-              //       rollNo: "",
-              //       phoneNo: "",
-              //     }
+              isEditing !== null
+                ? data[isEditing]
+                : {
+                    name: "",
+                    username: "",
+                    email: "",
+                    website: "",
+                    phone: "",
+                  }
             }
             enableReinitialize
             validationSchema={
               manage
-              // values=>{
-              //   const errors ={};
-              //   if(!values.firstName){
-              //     errors.firstName='Required';
-              //   }
-              //   if(!values.lastName){
-              //     errors.lastName='Required';
-              //   }
-              //   if(!values.email){
-              //     errors.email='Required';
-              //   } else if(
-              //     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-              //   ){
-              //     errors.email='Invalid email address';
-              //   }
-              //   if(!values.rollNo){
-              //     errors.rollNo='Required';
-              //   }
-              //   if(!values.phoneNo){
-              //     errors.phoneNo='Required';
-              //   }
-              //   return errors;
-              // }
             }
             onSubmit={handleSubmit}
           >
@@ -133,44 +89,44 @@ function App() {
               <Form className="flex-col space-y-4">
                 <div>
                   <div className="w-24 inline-block">
-                    <label className="mr-4 w-8">Firstname</label>
+                    <label className="mr-4 w-8">Name</label>
                   </div>
                   <Field
                     className={classNames(
                       "border rounded-lg p-2 focus:outline-none focus:ring-2",
                       {
-                        "border-red-500": errors.firstName && touched.firstName,
+                        "border-red-500": errors.name && touched.name,
                         "focus:ring-blue-500":
-                          !errors.firstName && !touched.firstName,
+                          !errors.name && !touched.name,
                       }
                     )}
-                    placeholder="Enter text"
-                    type="firstName"
-                    name="firstName"
+                    placeholder="Enter Name"
+                    type="name"
+                    name="name"
                   />
-                  {touched.firstName && errors.firstName && (
+                  {touched.name && errors.name && (
                     <div className="text-red-500 text-xs ">
-                      {errors.firstName}
+                      {errors.name}
                     </div>
                   )}
                 </div>
                 <div>
                   <div className="w-24 inline-block">
-                    <label className="mr-4 w-8">Lastname</label>
+                    <label className="mr-4 w-8">Username</label>
                   </div>
                   <Field
                     className={`border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      touched.lastName && errors.lastName
+                      touched.username && errors.username
                         ? "border-red-500"
                         : ""
                     }`}
-                    placeholder="Enter text"
-                    type="lastName"
-                    name="lastName"
+                    placeholder="Enter Username"
+                    type="username"
+                    name="username"
                   />
-                  {touched.lastName && errors.lastName && (
+                  {touched.username && errors.username && (
                     <div className="text-red-500 text-xs">
-                      {errors.lastName}
+                      {errors.username}
                     </div>
                   )}
                 </div>
@@ -186,7 +142,7 @@ function App() {
                         "focus:ring-blue-500": !errors.email && !touched.email,
                       }
                     )}
-                    placeholder="Enter text"
+                    placeholder="Enter Email"
                     type="email"
                     name="email"
                   />
@@ -196,23 +152,23 @@ function App() {
                 </div>
                 <div>
                   <div className="w-24 inline-block">
-                    <label className="mr-4">Roll No</label>
+                    <label className="mr-4">Website</label>
                   </div>
                   <Field
                     className={classNames(
                       "border rounded-lg p-2 focus:outline-none focus:ring-2",
                       {
-                        "border-red-500": errors.rollNo && touched.rollNo,
+                        "border-red-500": errors.website && touched.website,
                         "focus:ring-blue-500":
-                          !errors.rollNo && !touched.rollNo,
+                          !errors.website && !touched.website,
                       }
                     )}
-                    placeholder="Enter text"
-                    type="rollNo"
-                    name="rollNo"
+                    placeholder="Enter Website"
+                    type="website"
+                    name="website"
                   />
-                  {touched.rollNo && errors.rollNo && (
-                    <div className="text-red-500 text-xs">{errors.rollNo}</div>
+                  {touched.website && errors.website && (
+                    <div className="text-red-500 text-xs">{errors.website}</div>
                   )}
                 </div>
                 <div>
@@ -223,25 +179,25 @@ function App() {
                     className={classNames(
                       "border rounded-lg p-2 focus:outline-none focus:ring-2",
                       {
-                        "border-red-500": errors.phoneNo && touched.phoneNo,
+                        "border-red-500": errors.phone && touched.phone,
                         "focus:ring-blue-500":
-                          !errors.phoneNo && !touched.phoneNo,
+                          !errors.phone && !touched.phone,
                       }
                     )}
-                    placeholder="Enter text"
-                    type="phoneNo"
-                    name="phoneNo"
+                    placeholder="Enter Contactno"
+                    type="phone"
+                    name="phone"
                   />
-                  {touched.phoneNo && errors.phoneNo && (
-                    <div className="text-red-500 text-xs">{errors.phoneNo}</div>
+                  {touched.phone && errors.phone && (
+                    <div className="text-red-500 text-xs">{errors.phone}</div>
                   )}
-                  {/* <ErrorMessage className="text-red-500" name="phoneNo" component="div" /> */}
+                  {/* <ErrorMessage className="text-red-500" name="phone" component="div" /> */}
                 </div>
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
                   type="submit"
                 >
-                  {isEditing ? "Update" : "Submit"}
+                  {isEditing!==null ? "Update" : "Submit"}
                 </button>
               </Form>
             )}
@@ -269,29 +225,29 @@ function App() {
                       {id + 1}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200">
-                      {input.firstName}
+                      {input.name}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200">
-                      {input.lastName}
+                      {input.username}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200">
                       {input.email}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200">
-                      {input.rollNo}
+                      {input.website}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200">
-                      {input.phoneNo}
+                      {input.phone}
                     </td>
                     <td className="border px-4 py-2">
                       <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2 "
                         onClick={() => handleEdit(id)}
                       >
                         Edit
                       </button>
                       <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2"
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 rounded mr-2 mt-2"
                         onClick={() => handleDelete(id)}
                       >
                         Delete
