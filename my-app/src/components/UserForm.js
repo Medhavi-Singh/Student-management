@@ -2,7 +2,7 @@ import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import classNames from "classnames";
-import { useSelector } from "react-redux";
+
 
 
 const manage = Yup.object().shape({
@@ -16,7 +16,6 @@ const manage = Yup.object().shape({
 });
 
 function UserForm({ onSubmit, isEditing, data }) {
-    const users=useSelector((state)=>state.users);
   return (
     <div className="max-w-96 mx-auto mt-10 bg-white p-8 rounded shadow-md">
       <Formik
