@@ -4,7 +4,6 @@ import * as Yup from "yup";
 import classNames from "classnames";
 import { useSelector } from "react-redux";
 
-
 const manage = Yup.object().shape({
   name: Yup.string().min(2, "Too Short!").required("Name is required"),
   username: Yup.string().min(2, "Too Short!").required("Username is required"),
@@ -15,8 +14,9 @@ const manage = Yup.object().shape({
     .required("Contact no is required"),
 });
 
-function UserForm({ onSubmit, isEditing, data }) {
-    const users=useSelector((state)=>state.users);
+function UserForm({ onSubmit, isEditing }) {
+  const data = useSelector((state) => state.users.data);
+
   return (
     <div className="max-w-96 mx-auto mt-10 bg-white p-8 rounded shadow-md">
       <Formik

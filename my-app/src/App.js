@@ -1,26 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, {useState} from "react";
 import UserForm from "./components/UserForm";
 import UserTable from "./components/UserTable";
 import "./App.css";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser,deleteUser,updateUser } from "./app/usersSlice";
 
 function App() {
-  const [data, setData] = useState([]);
+  
+  const data = useSelector((state)=> state.users.data);
+  const dispatch = useDispatch();
+  // const [data, setData] = useState([]);
   const [isEditing, setIsEditing] = useState(null);
 
-  useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((response) => response.json().then((dt) => setData(dt)))
-      .catch((err) => console.error(err));
-  }, []);
+  // useEffect(() => {
+  //   fetch("https://jsonplaceholder.typicode.com/users")
+  //     .then((response) => response.json().then((dt) => setData(dt)))
+  //     .catch((err) => console.error(err));
+  // }, []);
 
   const handleSubmit = (values, { resetForm }) => {
     if (isEditing !== null) {
-      setData((prevData) =>
-        prevData.map((input, id) => (id === isEditing ? values : input))
-      );
+      dispatch(updateUser({index:isEditing, user:values}));
+      // console.log("handlesubmit->if condition");
+      // setData((prevData) =>
+      //   prevData.map((input, id) => (id === isEditing ? values : input))
+      // );
       setIsEditing(null);
     } else {
-      setData((prevData) => [...prevData, values]);
+      dispatch(addUser(values));
     }
     resetForm();
   };
@@ -30,7 +37,9 @@ function App() {
   };
 
   const handleDelete = (id) => {
-    setData((prevData) => prevData.filter((_, i) => i !== id));
+    dispatch(deleteUser(id));
+    // console.log("handledelete");
+    // setData((prevData) => prevData.filter((_, i) => i !== id));
   };
 
   return (
