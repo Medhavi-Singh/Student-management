@@ -1,17 +1,16 @@
-import React from "react";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-import classNames from "classnames";
-import { useSelector } from "react-redux";
+// src/UserForm.js
+import React from 'react';
+import { Formik, Form, Field } from 'formik';
+import * as Yup from 'yup';
+import classNames from 'classnames';
+import { useSelector } from 'react-redux';
 
 const manage = Yup.object().shape({
   name: Yup.string().min(2, "Too Short!").required("Name is required"),
   username: Yup.string().min(2, "Too Short!").required("Username is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   website: Yup.string().url().required("Website is required"),
-  phone: Yup.string()
-    .matches(/^\d{10}$/, "Must be exactly 10 digits.")
-    .required("Contact no is required"),
+  phone: Yup.string().matches(/^\d{10}$/, "Must be exactly 10 digits.").required("Contact no is required"),
 });
 
 function UserForm({ onSubmit, isEditing }) {
@@ -60,8 +59,7 @@ function UserForm({ onSubmit, isEditing }) {
                   "border rounded-lg p-2 focus:outline-none focus:ring-2",
                   {
                     "border-red-500": errors.username && touched.username,
-                    "focus:ring-blue-500":
-                      !errors.username && !touched.username,
+                    "focus:ring-blue-500": !errors.username && !touched.username,
                   }
                 )}
                 placeholder="Enter Username"

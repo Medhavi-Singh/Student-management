@@ -1,8 +1,7 @@
-import React from "react";
-
+// src/UserTableRow.js
+import React from 'react';
 
 function UserTableRow({ id, input, onEdit, onDelete }) {
-
   return (
     <tr className="hover:bg-gray-100">
       <td className="px-6 py-4 border-b border-gray-200">{id + 1}</td>
@@ -20,7 +19,7 @@ function UserTableRow({ id, input, onEdit, onDelete }) {
         </button>
         <button
           className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 rounded mr-2 mt-2"
-          onClick={() => onDelete(id)}
+          onClick={() => onDelete(input._id)}
         >
           Delete
         </button>

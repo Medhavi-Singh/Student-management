@@ -1,17 +1,11 @@
-import React from "react";
-import UserTableRow from "./UserTableRow";
+// src/UserTable.js
+import React from 'react';
+import UserTableRow from './UserTableRow';
 
 function UserTable({ data, onEdit, onDelete }) {
-  const headers = [
-    "Sr.no.",
-    "Name",
-    "Username",
-    "Email",
-    "Website",
-    "Phone No",
-    "Actions",
-  ];
-
+  console.log("🚀 ~ UserTable ~ data:", data)
+  const headers = ["Sr.no.", "Name", "Username", "Email", "Website", "Phone No", "Actions"];
+   
   return (
     <div>
       <table className="my-10 bg-white border border-gray-200 mx-auto border-collapse">
@@ -29,13 +23,7 @@ function UserTable({ data, onEdit, onDelete }) {
         </thead>
         <tbody>
           {data.map((input, id) => (
-            <UserTableRow
-              key={id}
-              id={id}
-              input={input}
-              onEdit={onEdit}
-              onDelete={onDelete}
-            />
+            <UserTableRow key={id} id={id} input={input} onEdit={onEdit} onDelete={onDelete} />
           ))}
         </tbody>
       </table>
